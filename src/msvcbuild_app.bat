@@ -23,6 +23,7 @@
 @set LJDLLNAME=lua51.dll
 @set LJLIBNAME=lua51.lib
 @set ALL_LIB=lib_base.c lib_math.c lib_bit.c lib_string.c lib_table.c lib_io.c lib_os.c lib_package.c lib_debug.c lib_jit.c lib_ffi.c
+@call vcvarsall x86
 
 %LJCOMPILE% host\minilua.c
 @if errorlevel 1 goto :BAD
@@ -62,6 +63,10 @@ buildvm -m vmdef -o jit\vmdef.lua %ALL_LIB%
 @if errorlevel 1 goto :BAD
 buildvm -m folddef -o lj_folddef.h lj_opt_fold.c
 @if errorlevel 1 goto :BAD
+
+@if "%BUILD_ARCH%" == "arm" (@echo Build ARM & @call vcvarsall x86_arm store)
+@if "%BUILD_ARCH%" == "x86" (@echo Build x86 & @call vcvarsall x86 store)
+@if "%BUILD_ARCH%" == "x64" (@echo Build x64 & @call vcvarsall x64 store)
 
 @if "%1" neq "debug" goto :NODEBUG
 @shift
